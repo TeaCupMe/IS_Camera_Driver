@@ -3,7 +3,6 @@
 
 #include "Registers.h"
 
-#include "IS_Cam.h"
 
 enum ImageSize
 {
@@ -11,7 +10,7 @@ enum ImageSize
     _320x240,
     _640x480,
     // TODO custom resolution?
-}
+};
 
 enum Colorspace
 {
@@ -19,48 +18,50 @@ enum Colorspace
     RGB555,
     YUV422,
     // TODO отдельное значение для WB?
-}
+};
 
 class Camera
 {
 public:
     Camera(ImageSize imageSize = ImageSize::_160x120, Colorspace colorspace = Colorspace::RGB555);
 
-    void setCameraImageSize(ImageSize imageSize);
-    void setCameraColorspace(Colorspace colorspace);
+    void setCameraImageSize(ImageSize imageSize); // REVIEW
+    void setCameraColorspace(Colorspace colorspace); // REVIEW 
 
-    bool setCameraRegister(RegisterData regData);
-    void readCameraRegister(RegisterData *regData);
+    bool setCameraRegister(const RegisterData *regData, bool ensure = false); // REVIEW
+    bool setCameraRegister(uint8_t addr, uint8_t val, bool ensure); // REVIEW 
+    void readCameraRegister(RegisterData *regData); // REVIEW
 
-    uint8_t getCameraRegister(RegisterData *regData);
-    uint8_t getCameraRegister(uint8_t addr);
+    uint8_t getCameraRegister(RegisterData *regData); // REVIEW
+    uint8_t getCameraRegister(uint8_t addr); // REVIEW
 
-    bool setCameraRegisters(const RegisterData *regs, bool ensure);
+    bool setCameraRegisters(const RegisterData *regs, int retries = 2); // TODO
 
-    void resetCamera();
+    void resetCamera(); // REVIEW 
 
-    void setCameraPresaler(int prescaler); // REVIEW - why did I use int here?
+    bool setCameraPresaler(int prescaler); // REVIEW - why did I use int here?
 
-    void setCameraPLLMultiplier(uint8_t multiplier); // REVIEW - unused in most scenarios
+    bool setCameraPLLMultiplier(uint8_t multiplier); // REVIEW - unused in most scenarios
 
-    void waitForPCLKRising(int16_t = 0);
-    void waitForPCLKFalling(int16_t = 0);
-    void waitForHREFRising(int16_t = 0);
-    void waitForHREFFalling(int16_t = 0);
-    void waitForVSYNCRising(int16_t = 0);
-    void waitForVSYNCFalling(int16_t = 0);
+    void waitForPCLKRising(int16_t = 0); // TODO
+    void waitForPCLKFalling(int16_t = 0); // TODO
+    void waitForHREFRising(int16_t = 0); // TODO
+    void waitForHREFFalling(int16_t = 0); // TODO
+    void waitForVSYNCRising(int16_t = 0); // TODO
+    void waitForVSYNCFalling(int16_t = 0); // TODO
 
-    void uartWaitForPreviousByteToBeSent();
-    void uartSendByte(uint8_t);
-    bool uartIsReady();
-    uint8_t uartHasData();
-    uint8_t uartGetData();
+    void uartWaitForPreviousByteToBeSent(); // TODO
+    void uartSendByte(uint8_t); // TODO
+    bool uartIsReady(); // TODO
+    uint8_t uartHasData(); // TODO
+    uint8_t uartGetData(); // TODO
 
 private:
     ImageSize _imageSize;
     Colorspace _colorspace;
-    int prescaler;
-    uint8_t address;
-}
+    int _prescaler;
+    uint8_t _address;
+    uint16_t _width, _height
+};
 
 #endif

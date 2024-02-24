@@ -1,12 +1,7 @@
-#ifndef REGISTERS_H
-#define REGISTERS_H
+#ifndef REGISTERS_H_
+#define REGISTERS_H_
 #include "Arduino.h"
 #define CAMERA_ADDRESS 0x21
-
-struct RegisterData { // Удобный объект для хранения данных для записи в регистр камеры
-  uint8_t addr;       // Адрес регистра
-  uint8_t val;        // Значения для записи
-};
 
 
 // Названия и ареса основных регистров и значения
@@ -173,6 +168,16 @@ struct RegisterData { // Удобный объект для хранения д�
 #define AWBCTR1		0x6e	/* AWB Control 1 */
 #define AWBCTR0		0x6f	/* AWB Control 0 */
 
+struct RegisterData { // Удобный объект для хранения данных для записи в регистр камеры
+  uint8_t addr;       // Адрес регистра
+  uint8_t val;        // Значения для записи
+};
 
-#endif // REGISTERS_H
+RegisterData ResetRegister = {REG_COM7, COM7_RESET};
+
+// #include "QQVGA_Registers.h"
+// #include "VGA_Registers.h"
+// #include "QVGA_Registers.h"
+
+#endif // REGISTERS_H_
 

@@ -8,7 +8,7 @@ bits [7:6] - command type:
   - 10: Picture height/10 in bits [5:0] - ? // используется нулевой бит, который зарезервирован под определение команды. Учитывая кратность размеров 20 всё должно быть нормально
   - 11: Picture width/10 in bits [5:0] - ?
 
-bit 0: always 0, indicates that byte is a command
+bit 0: always 0 for command byte, indicates that byte is a command
 
   - 00:
     - 0b00000110 - VSYNC
