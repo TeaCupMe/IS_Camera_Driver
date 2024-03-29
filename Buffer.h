@@ -12,6 +12,8 @@ class Buffer
 
 private:
     uint8_t *data;
+    uint16_t _toWrite, _toSend;
+    uint16_t _length;
 }
 
 #endif /* BUFFER_H_ */

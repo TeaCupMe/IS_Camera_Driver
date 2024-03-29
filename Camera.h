@@ -1,7 +1,19 @@
 #ifndef CAMERA_H_
 #define CAMERA_H_
 
-#include "Registers.h"
+#include <Wire.h>
+#include "Arduino.h"
+
+
+#include "Registers/Registers.h"
+
+#include "Registers/VGA_Registers.h"
+#include "Registers/QVGA_Registers.h"
+#include "Registers/QQVGA_Registers.h"
+
+#define PCLK ((PINB & 0b00000100) == 0 ? false : true)
+#define VSYNC ((PIND & 0b00000100) == 0 ? false : true)
+#define HREF ((PINB & 0b00000001) == 0 ? false : true) //! TODO
 
 enum ImageSize
 {
@@ -18,6 +30,11 @@ enum Colorspace
     YUV422,
     // TODO отдельное значение для WB?
 };
+
+inline void dummyRoutineFunction()
+{
+    // return;
+}
 
 class Camera
 {
@@ -42,23 +59,24 @@ public:
 
     bool setCameraPLLMultiplier(uint8_t multiplier); // REVIEW - unused in most scenarios
 
-    void waitForPCLKRising(int16_t = 0);   // TODO
-    void waitForPCLKFalling(int16_t = 0);  // TODO
-    void waitForHREFRising(int16_t = 0);   // TODO
-    void waitForHREFFalling(int16_t = 0);  // TODO
-    void waitForVSYNCRising(int16_t = 0);  // TODO
-    void waitForVSYNCFalling(int16_t = 0); // TODO
+    void waitForPCLKRising(uint16_t = 0, void (*routine)(void) = &dummyRoutineFunction);   // TODO
+    void waitForPCLKFalling(uint16_t = 0, void (*routine)(void) = &dummyRoutineFunction);  // TODO
+    void waitForHREFRising(uint16_t = 0, void (*routine)(void) = &dummyRoutineFunction);   // TODO
+    void waitForHREFFalling(uint16_t = 0, void (*routine)(void) = &dummyRoutineFunction);  // TODO
+    void waitForVSYNCRising(uint16_t = 0, void (*routine)(void) = &dummyRoutineFunction);  // TODO
+    void waitForVSYNCFalling(uint16_t = 0, void (*routine)(void) = &dummyRoutineFunction); // TODO
 
 private:
     ImageSize _imageSize;
     Colorspace _colorspace;
     int _prescaler;
     uint8_t _address;
-    uint16_t _width, _height
+    uint16_t _width, _height;
 };
 
 void uartWaitForPreviousByteToBeSent(); // TODO
-void uartSendByte(uint8_t);             // TODO
+void uartSendByteSafe(uint8_t);         // TODO
+void uartSendByte(uint8_t);             //! TODO just write to UDR0!!
 bool uartIsReady();                     // TODO
 uint8_t uartHasData();                  // TODO
 uint8_t uartGetData();                  // TODO

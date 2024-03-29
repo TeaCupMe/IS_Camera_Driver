@@ -1,11 +1,4 @@
-#include <Wire.h>
-#include "Arduino.h"
-
 #include "Camera.h"
-
-#include "VGA_Registers.h"
-#include "QVGA_Registers.h"
-#include "QQVGA_Registers.h"
 
 Camera::Camera(ImageSize imageSize, Colorspace colorspace)
 {
@@ -147,7 +140,7 @@ uint8_t Camera::getCameraRegister(uint8_t addr)
     return registerValue;
 }
 
-bool Camera::setCameraRegisters(const RegisterData *regs, int retries)
+bool Camera::setCameraRegisters(const RegisterData *regs, int retries) // FIXME debug mode support
 {
 #ifdef DEBUG_MODE
     uint8_t regsCount = 0;
@@ -167,6 +160,7 @@ bool Camera::setCameraRegisters(const RegisterData *regs, int retries)
                     break;
                 else
                 {
+                    // FIXME
                     // TODO
                 }
             }
@@ -199,26 +193,86 @@ bool Camera::setCameraPLLMultiplier(uint8_t multiplier)
     return setCameraRegister(DBLV, (currentValue & ~mask) | (multiplier << 6), true);
 }
 
-void Camera::waitForPCLKRising()
+void Camera::waitForPCLKRising(uint16_t skip, void (*routine)(void))
 {
+    while (skip >= 0)
+    {
+        while (PCLK)
+            routine();
+        while (!PCLK)
+            routine();
+        skip--;
+    }
 }
 
-void Camera::waitForPCLKFalling()
+void Camera::waitForPCLKFalling(uint16_t skip, void (*routine)(void))
 {
+    while (skip >= 0)
+    {
+        while (!PCLK)
+            routine();
+        while (PCLK)
+            routine();
+        skip--;
+    }
 }
 
-void Camera::waitForHREFRising()
+void Camera::waitForHREFRising(uint16_t skip, void (*routine)(void))
 {
+    while (skip >= 0)
+    {
+        while (HREF)
+            routine();
+        while (!HREF)
+            routine();
+        skip--;
+    }
 }
 
-void Camera::waitForHREFFalling()
+void Camera::waitForHREFFalling(uint16_t skip, void (*routine)(void))
 {
+    while (skip >= 0)
+    {
+        while (!HREF)
+            routine();
+        while (HREF)
+            routine();
+        skip--;
+    }
 }
 
-void Camera::waitForVSYNCRising()
+void Camera::waitForVSYNCRising(uint16_t skip, void (*routine)(void))
 {
+    while (skip >= 0)
+    {
+        while (VSYNC)
+            routine();
+        while (!VSYNC)
+            routine();
+        skip--;
+    }
 }
 
-void Camera::waitForVSYNCFalling()
+void Camera::waitForVSYNCFalling(uint16_t skip, void (*routine)(void))
 {
+    while (skip >= 0)
+    {
+        while (!VSYNC)
+            routine();
+        while (VSYNC)
+            routine();
+        skip--;
+    }
+}
+
+//          UART-related
+
+bool Camera::uartIsReady()
+{
+    return UCSR0A & (1 << UDRE0);
+}
+
+void Camera::uartWaitForPreviousByteToBeSent() {
+    while (!isUartReady())
+    ;  //wait for byte to transmit
 }
