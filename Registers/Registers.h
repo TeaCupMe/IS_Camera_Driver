@@ -4,7 +4,7 @@
 #define CAMERA_ADDRESS 0x21
 
 
-// Названия и ареса основных регистров и значения
+// Названия и адреса основных регистров и значения
 
 
 #define REG_GAIN	0x00	/* Gain lower 8 bits (rest in vref) */

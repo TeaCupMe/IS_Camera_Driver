@@ -19,6 +19,7 @@ bit 0: always 0 for command byte, indicates that byte is a command
 
 #define COMMAND_VSYNC 0b00000110
 #define COMMAND_HREF 0b00011000
-// #define COMMAND_
+
+#define COMMAND_ESC 0b00110010 // next symbol is NOT a command byte
 
 #endif // COMMANDS_H
