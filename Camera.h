@@ -66,6 +66,8 @@ public:
     void waitForVSYNCRising(uint16_t = 0, void (*routine)(void) = &dummyRoutineFunction);  // TODO
     void waitForVSYNCFalling(uint16_t = 0, void (*routine)(void) = &dummyRoutineFunction); // TODO
 
+    bool setupCamera();
+
 private:
     ImageSize _imageSize;
     Colorspace _colorspace;

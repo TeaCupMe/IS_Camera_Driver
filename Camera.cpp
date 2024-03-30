@@ -1,5 +1,7 @@
 #include "Camera.h"
 
+using namespace OV7670;
+
 Camera::Camera(ImageSize imageSize, Colorspace colorspace)
 {
     _colorspace = colorspace;
@@ -34,6 +36,7 @@ void Camera::setCameraColorspace(Colorspace colorspace)
     {
     case Colorspace::RGB555:
         /* code */
+        setCameraRegisters(_colorspace);
         break;
 
     case Colorspace::RGB565:
@@ -267,12 +270,31 @@ void Camera::waitForVSYNCFalling(uint16_t skip, void (*routine)(void))
 
 //          UART-related
 
-bool Camera::uartIsReady()
+bool Camera::uartIsReady() //! move to other file
 {
     return UCSR0A & (1 << UDRE0);
 }
 
-void Camera::uartWaitForPreviousByteToBeSent() {
+void Camera::uartWaitForPreviousByteToBeSent()
+{ //! move to other file
     while (!isUartReady())
-    ;  //wait for byte to transmit
+        ; // wait for byte to transmit
+}
+
+bool Camera::setupCamera()
+{
+    bool res = true;
+
+    // reset
+    resetCamera();
+    // write default
+    res &= setCameraRegisters(regsDefault, 2);
+    // write resolution
+    res &= setCameraImageSize(_imageSize);
+    // write colorspace
+    res &= setCameraColorspace(_imageSize);
+    // set prescaler
+    res &= setCameraPresaler(_prescaler);
+
+    return res;
 }
